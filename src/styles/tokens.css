@@ -1,0 +1,92 @@
+/**
+ * Design tokens as CSS custom properties.
+ *
+ * These mirror the values in tailwind.config.ts. Tailwind utilities are the
+ * primary way to consume these tokens in components — this file exists for
+ * the contexts Tailwind classes can't reach: raw CSS, inline styles, and
+ * JS/GSAP code that needs a real value rather than a class name.
+ *
+ * There is deliberately no build-time link between this file and
+ * tailwind.config.ts (see the comment at the top of that file for why an
+ * extra tool wasn't added for this). If a value changes here, change it
+ * there too, and vice versa.
+ *
+ * ⚠️ RECURRING MISTAKE — READ BEFORE USING ANY COLOR BELOW WITH A `/NN`
+ * OPACITY SUFFIX (e.g. `border-accent/40`, `bg-danger/20`):
+ * Every color below resolves to `var(--color-x)`, and Tailwind's opacity-
+ * modifier syntax is NOT reliable against colors expressed that way in
+ * this project. This has been found and fixed FIVE separate times across
+ * this build (accent-muted, surface-glass, the chatbot scrim, floating
+ * hero shapes, and the chat error banner) — it keeps recurring because it
+ * looks completely idiomatic and passes every visual/logical review right
+ * up until a real browser renders it. If you want a translucent version
+ * of any color here, either add a dedicated rgba() token below (see
+ * --color-accent-muted / --color-surface-glass / --color-scrim for the
+ * pattern) or use an inline `style={{ color: 'rgba(...)' }}` — never a
+ * Tailwind `/NN` suffix on one of these class names.
+ */
+
+:root {
+  /**
+   * Color — redesigned per an explicit, comprehensive request to raise
+   * the whole palette to an Apple × Linear × Vercel register (superseding
+   * Design System §2.2/§2.3's original near-black + single-teal system,
+   * not extending it — flagged in chat, not silently changed).
+   *
+   * Background shifts from flat near-black to a deep, faintly
+   * blue-violet-tinted navy (#050816) — "rich premium dark," not pure
+   * black. Surfaces are layered charcoal with the same cool undertone so
+   * elevation reads as depth, not just a lighter gray. Accent is now a
+   * small, deliberately restrained FAMILY (teal/cyan/blue/purple) rather
+   * than one flat color — teal remains the single PRIMARY accent for
+   * interactive elements (borders, focus rings, links) so the site still
+   * has one consistent "this is interactive" signal; cyan/blue/purple
+   * are for gradients and the aurora background only, never used alone
+   * as a solid interactive color. All four are soft/desaturated on
+   * purpose — "avoid neon, avoid oversaturated."
+   */
+  --color-bg: #050816;
+  --color-surface: #0d1220;
+  --color-surface-raised: #151b2e;
+  --color-border: #232a42;
+  --color-border-subtle: #1a2036;
+  --color-text-primary: #f5f7fa;
+  --color-text-secondary: #a8b0c4;
+  --color-text-tertiary: #6e7691;
+  --color-accent: #5eead4;
+  --color-accent-muted: rgba(94, 234, 212, 0.12);
+  --color-accent-hover: #7ff3e0;
+  --color-accent-cyan: #67e8f9;
+  --color-accent-blue: #93c5fd;
+  --color-accent-purple: #c4b5fd;
+  --color-success: #4ade80;
+  --color-danger: #f87171;
+  /**
+   * Glassmorphism is no longer confined to one sanctioned spot (that rule
+   * has been explicitly superseded) — surface-glass is now used more
+   * broadly (see Button/Card/Navbar comments) as well as still by the
+   * chatbot panel. Defined as its own rgba value, not a Tailwind opacity
+   * modifier on a var()-based color, for the same technical reason as
+   * before: that syntax isn't reliable against this token system.
+   */
+  --color-surface-glass: rgba(13, 18, 32, 0.72);
+  /** Solid overlay scrim for Modal and MobileMenu — recalculated to match the new bg. */
+  --color-scrim: rgba(5, 8, 22, 0.85);
+
+  /* Radius — Design System §4.4 */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 999px;
+
+  /* Motion — Design System §8.1 (seconds, for raw CSS transition-duration) */
+  --duration-instant: 0.1s;
+  --duration-fast: 0.16s;
+  --duration-base: 0.25s;
+  --duration-moderate: 0.4s;
+  --duration-slow: 0.6s;
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+}

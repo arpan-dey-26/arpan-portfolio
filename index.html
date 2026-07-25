@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0A0A0B" />
+
+    <title>%VITE_SITE_TITLE%</title>
+    <meta name="description" content="%VITE_SITE_DESCRIPTION%" />
+
+    <!-- Open Graph — Architecture §19 -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="%VITE_SITE_TITLE%" />
+    <meta property="og:description" content="%VITE_SITE_DESCRIPTION%" />
+    <meta property="og:url" content="%VITE_SITE_URL%" />
+    <meta property="og:image" content="%VITE_OG_IMAGE%" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="%VITE_SITE_TITLE%" />
+    <meta name="twitter:description" content="%VITE_SITE_DESCRIPTION%" />
+    <meta name="twitter:image" content="%VITE_OG_IMAGE%" />
+
+    <!--
+      Favicon — placeholder paths. Add the real files to public/favicon/
+      (see README.md → "Assets you still need to add").
+    -->
+    <link rel="icon" href="/favicon/favicon.ico" sizes="any" />
+    <link rel="icon" href="/favicon/icon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
+
+    <!--
+      Primary font preload. Add the real file at /fonts/Geist-Variable.woff2
+      (see README.md → "Assets you still need to add" and src/styles/fonts.css).
+    -->
+    <link
+      rel="preload"
+      href="/fonts/Geist-Variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin="anonymous"
+    />
+
+    <!--
+      Person schema (Architecture §19). Sourced from
+      MASTER_PORTFOLIO_DATA.md — full name, headline, verified profile
+      URLs, and city-level location. No fields here are guessed.
+    -->
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Arpan Dey",
+        "url": "%VITE_SITE_URL%",
+        "jobTitle": "Software Engineer | Java Developer | AI & Full-Stack Developer",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Kolkata",
+          "addressRegion": "West Bengal",
+          "addressCountry": "India"
+        },
+        "sameAs": [
+          "https://github.com/arpan-dey-26",
+          "https://www.linkedin.com/in/arpan-dey26",
+          "https://x.com/ArpanDeydev",
+          "https://leetcode.com/u/arpan_dey12/"
+        ]
+      }
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

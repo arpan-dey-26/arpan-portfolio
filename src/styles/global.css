@@ -1,0 +1,45 @@
+/**
+ * @import MUST come before @tailwind (and everything else except @charset)
+ * — this is a hard CSS syntax rule, not a style preference. The
+ * foundation build had these in the wrong order the whole time; it just
+ * never surfaced until an actual build ran it through PostCSS.
+ */
+@import './fonts.css';
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply bg-bg font-sans text-body text-text-primary antialiased;
+  }
+
+  ::selection {
+    @apply bg-accent-muted text-text-primary;
+  }
+
+  /*
+   * No `scroll-behavior: smooth` here on purpose — Lenis (via useLenis)
+   * owns scroll physics for the whole page (Architecture §16). Native CSS
+   * smooth-scroll fighting a JS scroll library for control is a common
+   * source of scroll jank.
+   */
+
+  /*
+   * Phase 2 — AmbientBackground's slow drift. Transform only (GPU-cheap),
+   * referenced via Tailwind's arbitrary animate-[float-glow_...] syntax,
+   * which needs this @keyframes rule defined somewhere — it isn't
+   * generated automatically.
+   */
+  @keyframes float-glow {
+    0%,
+    100% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(3%, 5%) scale(1.08);
+    }
+  }
+}
