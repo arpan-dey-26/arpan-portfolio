@@ -3,13 +3,22 @@ import { useEffect, type RefObject } from 'react';
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
 
-// Shared by Modal and MobileMenu (Architecture §13.2/§20) — both need
-// identical keyboard-accessibility discipline: trap Tab/Shift+Tab inside
-// the open surface, close on Escape, and restore focus to whatever was
-// focused before it opened. Extracted once here rather than duplicated in
-// both components.
+// Shared by Modal, MobileMenu, and ChatWindow (Architecture §13.2/§20) —
+// all three need identical keyboard-accessibility discipline: trap
+// Tab/Shift+Tab inside the open surface, close on Escape, and restore
+// focus to whatever was focused before it opened. Extracted once here
+// rather than duplicated three times.
+//
+// containerRef is typed `RefObject<HTMLElement | null>`, not
+// `RefObject<HTMLElement>` — this was a real TypeScript build error
+// (TS2345) caught by an actual production build: `useRef<HTMLDivElement>(null)`
+// in current React types infers as `RefObject<HTMLDivElement | null>` (the
+// `| null` is folded into the ref's own generic parameter now, not just
+// implied by RefObject's internal definition), so a parameter typed as
+// plain `RefObject<HTMLElement>` rejects every real caller in this
+// codebase, all three of which call it exactly that way.
 export function useFocusTrap(
-  containerRef: RefObject<HTMLElement>,
+  containerRef: RefObject<HTMLElement | null>,
   isActive: boolean,
   onEscape?: () => void
 ) {

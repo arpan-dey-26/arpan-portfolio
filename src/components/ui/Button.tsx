@@ -17,9 +17,34 @@ interface CommonProps {
 // Renders as <a> when `href` is provided, <button> otherwise — one
 // component covers both cases (external links like "View GitHub" and real
 // actions like the mobile-menu toggle) rather than needing two primitives.
+//
+// The Omit list below is a real TypeScript build error fix (TS2322), not
+// a style choice: `<motion.button>`/`<motion.a>` redefine several native
+// event handler props (drag/animation/transition-related ones) with their
+// own gesture-system signatures, and ButtonHTMLAttributes' NATIVE
+// versions of those same prop names are structurally incompatible with
+// Framer's versions. Spreading `{...rest}` (built from ButtonHTMLAttributes)
+// onto a motion component fails to type-check unless the conflicting
+// names are excluded here first — confirmed against an actual production
+// build's error output, not guessed.
 export interface ButtonProps
   extends CommonProps,
-    Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'color'>,
+    Omit<
+      ButtonHTMLAttributes<HTMLButtonElement>,
+      | 'color'
+      | 'onDrag'
+      | 'onDragStart'
+      | 'onDragEnd'
+      | 'onDragEnter'
+      | 'onDragExit'
+      | 'onDragLeave'
+      | 'onDragOver'
+      | 'onDrop'
+      | 'onAnimationStart'
+      | 'onAnimationEnd'
+      | 'onAnimationIteration'
+      | 'onTransitionEnd'
+    >,
     Pick<AnchorHTMLAttributes<HTMLAnchorElement>, 'href' | 'target' | 'rel' | 'download'> {}
 
 const VARIANT_CLASSES: Record<ButtonVariant, string> = {

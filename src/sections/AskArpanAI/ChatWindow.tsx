@@ -58,7 +58,7 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
         >
           <header className="flex items-center justify-between border-b border-border-subtle px-4 py-3">
             <h2 className="text-body-sm font-semibold text-text-primary">Ask Arpan AI</h2>
-            <IconButton variant="icon" aria-label="Close chat" icon={<PiX size={18} />} onClick={onClose} />
+            <IconButton aria-label="Close chat" icon={<PiX size={18} />} onClick={onClose} />
           </header>
 
           <div ref={threadRef} className="flex flex-1 flex-col gap-3 overflow-y-auto p-4" aria-live="polite">
@@ -98,7 +98,6 @@ export function ChatWindow({ isOpen, onClose }: ChatWindowProps) {
             />
             <IconButton
               type="submit"
-              variant="icon"
               aria-label="Send message"
               icon={<PiPaperPlaneTilt size={18} />}
               disabled={!inputValue.trim()}

@@ -3,23 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0A0A0B" />
+    <meta name="theme-color" content="#050816" />
 
     <title>%VITE_SITE_TITLE%</title>
     <meta name="description" content="%VITE_SITE_DESCRIPTION%" />
+    <link rel="canonical" href="%VITE_SITE_URL%" />
 
     <!-- Open Graph — Architecture §19 -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="%VITE_SITE_TITLE%" />
     <meta property="og:description" content="%VITE_SITE_DESCRIPTION%" />
     <meta property="og:url" content="%VITE_SITE_URL%" />
-    <meta property="og:image" content="%VITE_OG_IMAGE%" />
+    <meta property="og:image" content="%VITE_SITE_URL%%VITE_OG_IMAGE%" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="%VITE_SITE_TITLE%" />
     <meta name="twitter:description" content="%VITE_SITE_DESCRIPTION%" />
-    <meta name="twitter:image" content="%VITE_OG_IMAGE%" />
+    <meta name="twitter:image" content="%VITE_SITE_URL%%VITE_OG_IMAGE%" />
 
     <!--
       Favicon — placeholder paths. Add the real files to public/favicon/
