@@ -1,4 +1,4 @@
-import type { HTMLMotionProps } from 'framer-motion';
+import type { MouseEventHandler } from 'react';
 import { useMotionValue, useSpring } from 'framer-motion';
 import { useMediaQuery } from './useMediaQuery';
 import { useReducedMotion } from './useReducedMotion';
@@ -13,13 +13,13 @@ const FINE_POINTER_QUERY = '(hover: hover) and (pointer: fine)';
  * than becoming a third copy. Same gating as every other pointer-driven
  * effect: real pointer + reduced motion.
  *
- * Handler typing fix (real TS2322 build error, same root cause as
- * useMagneticHover.ts): these are spread onto <motion.article>/<motion.div>
- * elements in three different components, so they must satisfy Framer's
- * own prop types exactly, not a hand-typed `React.MouseEvent<HTMLElement>`
- * signature. `handlers` is annotated with Framer's own `HTMLMotionProps`
- * picked type so TypeScript infers each callback's parameter correctly
- * from that annotation, rather than guessing Framer's exact event union.
+ * Handler typing — corrected root-cause fix, same issue and same fix as
+ * useMagneticHover.ts: these handlers are spread onto <motion.div>
+ * (HeroPhoto) and <motion.article> (ProjectCard, CurrentlyBuildingTeaserCard)
+ * — three different underlying elements. `MouseEventHandler<HTMLElement>`
+ * (the generic base) is correct here precisely because it makes no
+ * assumption about which specific tag it will end up attached to, and
+ * every one of those elements' handler types extends from HTMLElement's.
  */
 export function useTilt(strength = 8) {
   const hasFinePointer = useMediaQuery(FINE_POINTER_QUERY);
@@ -31,26 +31,22 @@ export function useTilt(strength = 8) {
   const rotateX = useSpring(rotateXValue, { stiffness: 150, damping: 20 });
   const rotateY = useSpring(rotateYValue, { stiffness: 150, damping: 20 });
 
-  const handlers: Pick<HTMLMotionProps<'div'>, 'onMouseMove' | 'onMouseLeave'> = {
-    onMouseMove: (event) => {
-      if (!enabled) return;
-      if (!('clientX' in event) || !('clientY' in event)) return;
-      const target = event.currentTarget;
-      if (!(target instanceof HTMLElement)) return;
-      const rect = target.getBoundingClientRect();
-      const relX = (event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
-      const relY = (event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
-      rotateYValue.set(relX * strength);
-      rotateXValue.set(relY * -strength);
-    },
-    onMouseLeave: () => {
-      rotateXValue.set(0);
-      rotateYValue.set(0);
-    },
+  const handleMouseMove: MouseEventHandler<HTMLElement> = (event) => {
+    if (!enabled) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const relX = (event.clientX - (rect.left + rect.width / 2)) / (rect.width / 2);
+    const relY = (event.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+    rotateYValue.set(relX * strength);
+    rotateXValue.set(relY * -strength);
+  };
+
+  const handleMouseLeave: MouseEventHandler<HTMLElement> = () => {
+    rotateXValue.set(0);
+    rotateYValue.set(0);
   };
 
   return {
     style: { rotateX, rotateY, transformPerspective: 1000 },
-    handlers,
+    handlers: { onMouseMove: handleMouseMove, onMouseLeave: handleMouseLeave },
   };
 }

@@ -1,4 +1,4 @@
-import type { HTMLMotionProps } from 'framer-motion';
+import type { MouseEventHandler } from 'react';
 import { useMotionValue, useSpring } from 'framer-motion';
 import { useMediaQuery } from './useMediaQuery';
 import { useReducedMotion } from './useReducedMotion';
@@ -11,21 +11,22 @@ const FINE_POINTER_QUERY = '(hover: hover) and (pointer: fine)';
  * just a viewport-width breakpoint, since a touch laptop at desktop width
  * still has no meaningful "hover") and reduced motion.
  *
- * Handler typing fix (real TS2322 build error from an actual production
- * build): these are spread directly onto <motion.button>/<motion.a>
- * elements, so they must satisfy Framer Motion's OWN prop types exactly
- * — Framer's pointer-related handlers accept a broader native event
- * union (MouseEvent | TouchEvent | PointerEvent) than a plain
- * `React.MouseEvent<HTMLElement>` handler promises to handle, and a
- * narrower-parameter function isn't assignable to a slot expecting a
- * wider one. Rather than guess Framer's exact union and hand-type it
- * (real risk of guessing wrong again), `handlers` is annotated with
- * Framer's own `HTMLMotionProps<'div'>` picked type — TypeScript then
- * infers each callback's parameter type FROM that annotation
- * automatically, guaranteed to match whatever Framer actually declares
- * without needing to know or restate it. `'clientX' in event` narrows
- * the resulting union safely (excludes plain TouchEvent, which doesn't
- * carry clientX/clientY directly) — no `any`, no type assertion.
+ * Handler typing — corrected root-cause fix, replacing a wrong one:
+ * these handlers get spread onto <motion.button>, <motion.a>, AND plain
+ * <motion.div>-based components across the codebase. An earlier fix
+ * assumed Framer broadens onMouseMove/onMouseLeave to accept native
+ * MouseEvent|TouchEvent|PointerEvent and extracted a type from
+ * HTMLMotionProps<'div'> to match — that was wrong on two counts: (1)
+ * Framer actually uses standard React synthetic event types for these,
+ * parameterized per-tag exactly like vanilla React, and only genuine
+ * Framer-specific gesture props (onDrag/onPan/onTap) get a broadened
+ * signature; (2) tying the type to 'div' specifically meant these
+ * handlers no longer satisfied <motion.button>/<motion.a>, which is
+ * exactly the regression a real build caught. `MouseEventHandler<HTMLElement>`
+ * (the generic base, not any specific tag) is the correct fix: a handler
+ * that only needs HTMLElement-level features is safely assignable
+ * wherever a handler for any more specific element is expected, since
+ * every HTML element interface extends HTMLElement.
  */
 export function useMagneticHover(strength = 0.25) {
   const hasFinePointer = useMediaQuery(FINE_POINTER_QUERY);
@@ -37,24 +38,20 @@ export function useMagneticHover(strength = 0.25) {
   const springX = useSpring(x, { stiffness: 200, damping: 15, mass: 0.2 });
   const springY = useSpring(y, { stiffness: 200, damping: 15, mass: 0.2 });
 
-  const handlers: Pick<HTMLMotionProps<'div'>, 'onMouseMove' | 'onMouseLeave'> = {
-    onMouseMove: (event) => {
-      if (!enabled) return;
-      if (!('clientX' in event) || !('clientY' in event)) return;
-      const target = event.currentTarget;
-      if (!(target instanceof HTMLElement)) return;
-      const rect = target.getBoundingClientRect();
-      x.set((event.clientX - (rect.left + rect.width / 2)) * strength);
-      y.set((event.clientY - (rect.top + rect.height / 2)) * strength);
-    },
-    onMouseLeave: () => {
-      x.set(0);
-      y.set(0);
-    },
+  const handleMouseMove: MouseEventHandler<HTMLElement> = (event) => {
+    if (!enabled) return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    x.set((event.clientX - (rect.left + rect.width / 2)) * strength);
+    y.set((event.clientY - (rect.top + rect.height / 2)) * strength);
+  };
+
+  const handleMouseLeave: MouseEventHandler<HTMLElement> = () => {
+    x.set(0);
+    y.set(0);
   };
 
   return {
     style: { x: springX, y: springY },
-    handlers: enabled ? handlers : {},
+    handlers: enabled ? { onMouseMove: handleMouseMove, onMouseLeave: handleMouseLeave } : {},
   };
 }
