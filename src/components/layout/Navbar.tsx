@@ -12,6 +12,14 @@ import { MobileMenu } from './MobileMenu';
 const SCROLL_GLASS_THRESHOLD = 24;
 const SCROLL_HIDE_THRESHOLD = 120;
 
+// Computed once at module load, not per-render — navLinks is a static
+// import, so this never actually changes. Passing a freshly-mapped array
+// literal to useActiveSection on every render would give it a new array
+// reference each time even though the actual ids never change, tearing
+// down and recreating its IntersectionObserver for no reason on every
+// Navbar re-render (e.g. every scroll-glass/hide-show state flip).
+const NAV_SECTION_IDS = navLinks.map((link) => link.href.replace('#', ''));
+
 /**
  * Inline links show at `laptop:` and above; below that, the mobile menu
  * toggle takes over (Architecture §6.2 leaves the exact fallback point to
@@ -34,7 +42,7 @@ export function Navbar() {
   const lastScrollY = useRef(0);
   const prefersReducedMotion = useReducedMotion();
 
-  const activeId = useActiveSection(navLinks.map((link) => link.href.replace('#', '')));
+  const activeId = useActiveSection(NAV_SECTION_IDS);
   const resumeLink = socialLinks.find((link) => link.platform === 'resume');
 
   const { scrollY } = useScroll();
