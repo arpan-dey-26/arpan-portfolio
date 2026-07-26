@@ -26,26 +26,23 @@ export default defineConfig({
     include: ['react-icons/pi', 'react-icons/si'],
   },
   build: {
-    rollupOptions: {
-      output: {
-        // Forward-configured per Architecture §17 (Bundle optimization).
-        // These groupings have nothing to chunk yet since Hero/AskArpanAI
-        // aren't built — the config is correct and ready for when they are,
-        // so no vite.config.ts change is needed at that point.
-        manualChunks(id) {
-          if (!id.includes('node_modules')) return;
-          if (id.includes('react-dom') || id.includes('/react/') || id.includes('react-router')) {
-            return 'vendor-react';
-          }
-          if (id.includes('@splinetool')) {
-            return 'vendor-spline';
-          }
-          if (id.includes('gsap')) {
-            return 'vendor-gsap';
-          }
-          return 'vendor';
-        },
-      },
-    },
+    // No custom manualChunks here — see git history / README for why one
+    // existed and was removed. It grouped vendor packages by naive
+    // substring matching (react-dom/react/react-router → one chunk;
+    // gsap → another; @splinetool → another; everything else, including
+    // framer-motion, lenis, and react-icons → a separate generic chunk).
+    // framer-motion creates React Context objects at module-evaluation
+    // time (for AnimatePresence/MotionConfig/etc.), and it's used in
+    // nearly every component in this project — putting it in a
+    // DIFFERENT chunk than react/react-dom, with no explicit dependency
+    // edge between them, doesn't guarantee the React chunk finishes
+    // executing before framer-motion's module code runs. That's the
+    // production-only "Cannot read properties of undefined (reading
+    // 'createContext')" crash: works in dev (Vite serves native ES
+    // modules with no chunk reordering) and breaks specifically once
+    // code-splitting is in play. Vite/Rollup's DEFAULT chunking (no
+    // manualChunks function at all) analyzes the actual import graph and
+    // doesn't have this hazard — trusted over a hand-rolled heuristic
+    // that's already caused one production outage.
   },
 });
