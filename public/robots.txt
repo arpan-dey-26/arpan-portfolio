@@ -1,4 +1,14 @@
+
+
+
+
+
+
+
+
+
+
 User-agent: *
 Allow: /
 
-Sitemap: https://example.com/sitemap.xml
+Sitemap: https://arpan-portfolio-beta.vercel.app/sitemap.xml
