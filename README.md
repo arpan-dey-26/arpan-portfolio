@@ -751,16 +751,20 @@ enforcement every section will use).
 |---|---|---|
 | Resume | `public/resume.pdf` | Source data says this is genuinely still pending |
 | AyurHerb / PrePit AI GitHub repo URLs | — | Confirmed to exist in the source material, but no actual link text was given anywhere |
-| Geist variable font | `public/fonts/Geist-Variable.woff2` | `npm install geist` or https://github.com/vercel/geist-font |
-| JetBrains Mono variable font | `public/fonts/JetBrainsMono-Variable.woff2` | https://www.jetbrains.com/lp/mono/ |
 | Favicon | `public/favicon/favicon.ico`, `icon.svg`, `apple-touch-icon.png` | See `public/favicon/README.md` |
-| OG image | `public/og-image.png` (1200×630) | Referenced via `VITE_OG_IMAGE` |
-| Spline fallback poster | `public/spline-fallback.webp` | A code-based placeholder (`HeroFallbackVisual`) is standing in for now |
-| `ANTHROPIC_API_KEY` | `.env` (never committed) | Needed once the Ask Arpan AI backend is implemented |
+| `ANTHROPIC_API_KEY` value | Vercel project env vars | Route (`api/chat.ts`) is implemented; needs your actual key |
+| `VITE_EMAILJS_*` values | Vercel project env vars | Route is implemented; needs your actual EmailJS credentials |
 
-Profile photo, AyurHerb screenshots, the PrePit AI architecture diagram, and
-4 of 5 certificate PDFs are now in the repo (`src/assets/images/`,
-`public/certificates/`) — see the changelog above.
+Resolved since first flagged: Geist and JetBrains Mono are now loaded
+directly from Google Fonts (see `index.html`'s `<link>` tags) rather than
+self-hosted — both are confirmed genuinely hosted there
+(fonts.google.com/specimen/Geist and .../JetBrains+Mono), so this is the
+same typography, not a substitute, and no local font files are needed at
+all. This is also what fixed the production 404s these files were
+causing (`public/fonts/` never existed). Profile photo, AyurHerb
+screenshots, the PrePit AI architecture diagram, all 5 certificate PDFs,
+and the OG image (`public/og-image.png`, generated from the real photo)
+are also now in the repo — see the changelog above.
 
 ### Known content gaps (facts, not files)
 

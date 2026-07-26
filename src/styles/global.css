@@ -4,7 +4,6 @@
  * foundation build had these in the wrong order the whole time; it just
  * never surfaced until an actual build ran it through PostCSS.
  */
-@import './fonts.css';
 @import './tokens.css';
 
 @tailwind base;

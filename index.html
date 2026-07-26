@@ -33,15 +33,27 @@
     <link rel="apple-touch-icon" href="/favicon/apple-touch-icon.png" />
 
     <!--
-      Primary font preload. Add the real file at /fonts/Geist-Variable.woff2
-      (see README.md → "Assets you still need to add" and src/styles/fonts.css).
+      Geist (primary) + JetBrains Mono (code/tags) via Google Fonts.
+      Confirmed both are hosted there directly: fonts.google.com/specimen/Geist
+      and fonts.google.com/specimen/JetBrains+Mono. Deliberately JetBrains
+      Mono, not Geist Mono — the Design System's original choice was two
+      distinct families, not Geist's own unified Sans+Mono pairing, and
+      this preserves that exact decision rather than substituting a
+      different (if related) font.
+      Replaces the original self-hosted @font-face setup (src/styles/fonts.css)
+      — those binary files were never actually provided (this environment
+      has no network access to fetch them), which is what caused the
+      production 404s. Same fonts, same weights, different delivery
+      mechanism — no typographic change.
+      Weights requested match what's actually used in this codebase
+      (font-medium/500, font-semibold/600, default/400), plus 700 as a
+      small buffer.
     -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      rel="preload"
-      href="/fonts/Geist-Variable.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin="anonymous"
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
     />
 
     <!--
