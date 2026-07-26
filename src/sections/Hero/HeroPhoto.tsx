@@ -102,17 +102,20 @@ export function HeroPhoto() {
 
         <div className="absolute inset-3 overflow-hidden rounded-full shadow-hover">
           <img
-            src={profilePhoto}
-            alt="Arpan Dey"
-            loading="lazy"
-            width={800}
-            height={800}
-            onLoad={() => setIsLoaded(true)}
-            className={cn(
-              'h-full w-full object-cover transition-opacity duration-slow ease-out-expo',
-              isLoaded ? 'opacity-100' : 'opacity-0'
-            )}
-          />
+
+        src={profilePhoto}
+  alt="Arpan Dey"
+  loading="eager"
+  fetchPriority="high"
+  decoding="async"
+  width={800}
+  height={800}
+  onLoad={() => setIsLoaded(true)}
+  className={cn(
+    'h-full w-full object-cover transition-opacity duration-slow ease-out-expo',
+    isLoaded ? 'opacity-100' : 'opacity-0'
+  )}
+/>
         </div>
       </motion.div>
     </div>
